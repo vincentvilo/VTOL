@@ -5,7 +5,7 @@
   "3dr_solo": false,
   "cv_simulated": {
     "toggled_on": true,
-    "directory": "./simulation_images/"
+    "directory": "some/path/for/now/i/will/add/in/later/when/testing"
   },
   "mission_control_MAC": "0013A200409BD79C",
   "baud_rate": 57600,
@@ -17,8 +17,6 @@
   "d_theta_rad": 0.392699,
   "quick_scan_specific": {
     "role_switching": false,
-    "quick_scan_images": "./quick_scan_images/",
-    "rad_threshold" : 0.174533,
     "comms_simulated": {
       "toggled_on": true,
       "comm_sim_file": "comm_sim_quick_scan.txt"

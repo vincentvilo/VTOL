@@ -7,13 +7,12 @@ import subprocess
 img_counter = 0
 
 def cv_simulation(configs):
-   global img_counter
-   files = listdir(configs["cv_simulated"]["directory"])
-   path = configs["cv_simulated"]["directory"] + "/" + files[img_counter % len(files)]
-   img = cv2.imread(path, 1)
-   img_counter += 1
-   return img
-
+    global img_counter
+    files = sorted_aphanumeric(listdir(configs["cv_simulated"]["directory"]))
+    path = configs["cv_simulated"]["directory"] + "/" + files[img_counter % len(files)]
+    img = cv2.imread(path, 1)
+    img_counter += 1
+    return img
 
 def connect_solo_wifi():
    # execute the shell script (does not terminate)
@@ -45,5 +44,3 @@ def take_picture(camera, configs):
        raw_capture = PiRGBArray(camera)
        camera.capture(raw_capture, format="bgr")
        return raw_capture.array
-
-

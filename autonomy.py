@@ -125,17 +125,17 @@ def start_auto_mission(configs, vehicle):
     while not vehicle.is_armable:
         print " Waiting for vehicle to initialise..."
         time.sleep(1)
-
+        
     vehicle.mode = VehicleMode("GUIDED")
     vehicle.armed = True
 
-    while not vehicle.armed:
+    while not vehicle.armed:      
         print " Waiting for arming..."
         time.sleep(1)
 
     vehicle.commands.next = 0
     vehicle.mode = VehicleMode("AUTO")
-
+    
     if (configs["vehicle_type"] == "Quadcopter"):
         msg = vehicle.message_factory.command_long_encode(
             0, 0,    # target_system, target_component
@@ -213,7 +213,7 @@ def acknowledge(address, ackid):
 # and describes error from parsing original message.
 # :param address: address of GCS
 # :param problem: string describing error from parsing original message
-def bad_msg(address, problem, autonomyToCV):
+def bad_msg(address, problem):
     msg = {
         "type": "badMessage",
         "time": round(time.clock() - connection_timestamp) + gcs_timestamp,
@@ -225,10 +225,7 @@ def bad_msg(address, problem, autonomyToCV):
     }
     # xbee is None if comms is simulated
     if xbee:
-        # Instantiate a remote XBee device object to send data.
-        autonomyToCV.xbeeMutex.release()
         send_msg(address, msg)
-        autonomyToCV.xbeeMutex.release()
     else:
         print("Error:", problem)
 
@@ -281,7 +278,7 @@ def include_heading():
 
 # :param vehicle: vehicle object that represents drone
 # :param vehicle_type: vehicle type from configs file
-def update_thread(vehicle, address, autonomyToCV):
+def update_thread(vehicle, address):
     print("Starting update thread\n")
 
     while not mission_completed:
@@ -307,11 +304,8 @@ def update_thread(vehicle, address, autonomyToCV):
             update_message["heading"] = vehicle.heading
 
         if xbee:
-            # Instantiate a remote XBee device object to send data.
-            autonomyToCV.xbeeMutex.acquire()
             send_till_ack(address, update_message, msg_id)
-            autonomyToCV.xbeeMutex.release()
-
+            
         time.sleep(1)
 
     change_status("ready")

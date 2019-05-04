@@ -3,10 +3,10 @@ from digi.xbee.devices import RemoteXBeeDevice
 from digi.xbee.models.address import XBee64BitAddress
 
 sys.path.append('..')
-from VTOL.autonomy import setup_xbee
+from autonomy import setup_xbee
 
 # Insert the MAC Address of desired radio here
-MAC_ADDR = "0013A200409BD79C"
+MAC_ADDR = "0013A20040F8064C"
 DATA_TO_SEND = "Hello XBee!"
 
 

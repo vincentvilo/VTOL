@@ -36,11 +36,10 @@ def xbee_callback(compressed_message, autonomyToCV):
     global search_area
     global comm_sim_on
     if (comm_sim_on):
-        message = compressed_message
+        msg = json.loads(compressed_message)
     else:
-        message = msgpack.unpackb(compressed_message)
-    address = message.remote_device.get_64bit_addr()
-    msg = json.loads(message.data.decode("utf8"))
+        msg = msgpack.unpackb(compressed_message.data)
+    address = compressed_message.remote_device.get_64bit_addr()
     print("Received data from %s: %s" % (address, msg))
 
     try:
@@ -206,6 +205,10 @@ def quick_scan_autonomy(configs, autonomyToCV, gcs_timestamp, connection_timesta
         autonomy.xbee.add_data_received_callback(xbee_callback)
         autonomyToCV.xbeeMutex.release()
 
+    # Starts the update thread
+    update = Thread(target=update_thread, args=(vehicle, configs["mission_control_MAC"], autonomyToCV))
+    update.start()
+
     # Generate waypoints after start_mission = True
     while not autonomy.start_mission:
         pass
@@ -218,10 +221,6 @@ def quick_scan_autonomy(configs, autonomyToCV, gcs_timestamp, connection_timesta
     autonomyToCV.vehicleMutex.acquire()
     autonomyToCV.vehicle = vehicle
     autonomyToCV.vehicleMutex.release()
-
-    # Starts the update thread
-    update = Thread(target=update_thread, args=(vehicle, configs["mission_control_MAC"], autonomyToCV))
-    update.start()
 
     # Send mission to vehicle
     quick_scan_adds_mission(configs, vehicle, waypoints[1])

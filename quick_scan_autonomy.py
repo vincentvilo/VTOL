@@ -201,6 +201,12 @@ def quick_scan_autonomy(configs, radio):
     if (configs["flight_mode"] == "AUTO"):
         while vehicle.commands.next != vehicle.commands.count:
             # TODO monitor pause, resume, stop variables
+            if autonomy.pause_mission:
+                configs["flight_mode"] = "HOVER" # real answer said QHOVER; depends on VehicleType?
+            else:
+                configs["flight_mode"] = "AUTO"
+            if autonomy.stop_mission:
+                break
             print(vehicle.location.global_frame)
             time.sleep(1)
     else:
